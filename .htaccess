@@ -1,0 +1,21 @@
+# Apache bei IONOS, Ordner /studios, Domain apexstudios-apps.de (seit 27.10.2026,
+# vorher GitHub Pages unter apexstudios-de.github.io). Hochgeladen vom Workflow
+# deploy-studios im Repo apexstudios-de/cosmos-website.
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+
+RewriteEngine On
+# Nur HTTPS. Kein HSTS: ein Fehler damit sperrt Besucher monatelang aus.
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+# www auf die nackte Domain
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+# Quelltext-Reste des Repos nicht ausliefern
+RewriteRule (^|/)(README\.md|\.nojekyll|\.git.*)$ - [R=404,L]
+
+<IfModule mod_headers.c>
+  Header always set Referrer-Policy "no-referrer"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+</IfModule>
